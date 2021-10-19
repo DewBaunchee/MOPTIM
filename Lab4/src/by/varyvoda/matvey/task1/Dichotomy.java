@@ -7,15 +7,19 @@ public class Dichotomy extends MinimumSearchTask {
     }
 
     protected double[] generateArguments() {
-        double[] x = new double[n];
-        for (int i = 0; i < n; i++) {
-            int ordinal = i + 1;
-            if (ordinal % 2 == 0) {
-                x[i] = a + ordinal * (b - a) / (0.5 + 1) + 0.5 * e;
+        int j = 1;
+        while (j < n / 2 && b - a > e) {
+            double x1 = (a + b) / 2 - e / 2;
+            double x2 = (a + b) / 2 + e / 2;
+
+            if (Function.solve(x1) > Function.solve(x2)) {
+                a = x1;
             } else {
-                x[i] = a + ordinal * (b - a) / (0.5 + 1) - 0.5 * e;
+                b = x2;
             }
+            j++;
         }
-        return x;
+        double result = (a + b) / 2;
+        return new double[]{result - e / 2, result, result + e / 2};
     }
 }

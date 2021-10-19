@@ -8,8 +8,8 @@ public abstract class MinimumSearchTask {
 
     protected final int n;
     protected final double e;
-    protected final double a;
-    protected final double b;
+    protected double a;
+    protected double b;
 
     public MinimumSearchTask(int n, double e, double a, double b) {
         this.n = n;
@@ -21,11 +21,16 @@ public abstract class MinimumSearchTask {
     protected abstract double[] generateArguments();
 
     public void solve() {
+        System.out.printf("Search by %s in %s with n = %s%s:\n",
+                getClass().getSimpleName(),
+                "[" + a + ", " + b + "]",
+                n,
+                (n % 2 == 0 ? ", e = " + e : ""));
+
         double[] args = generateArguments();
         double[] results = Arrays.stream(args).map(Function::solve).toArray();
         int minIndex = findMinIndex(results);
 
-        System.out.printf("Search by %s, n = %s%s:\n", getClass().getSimpleName(), n, (n % 2 == 0 ? ", e = " + e : ""));
         PrintUtils.printResults(args, results, minIndex);
         System.out.println();
     }
