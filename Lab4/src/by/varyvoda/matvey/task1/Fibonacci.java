@@ -12,12 +12,12 @@ public class Fibonacci extends MinimumSearchTask {
     @Override
     protected double[] generateArguments() {
         int j = 1;
-        while (j < n-1) {
+        while (j < n - 1) {
             double v = Math.pow(-1, n - j + 1) * e;
             double x1 = a + (b - a) * F[n - j - 1] / F[n - j + 1] - v / F[n - j + 1];
             double x2 = a + (b - a) * F[n - j] / F[n - j + 1] + v / F[n - j + 1];
 
-            if(Function.solve(x1) > Function.solve(x2)) {
+            if (Function.solve(x1) > Function.solve(x2)) {
                 a = x1;
             } else {
                 b = x2;
