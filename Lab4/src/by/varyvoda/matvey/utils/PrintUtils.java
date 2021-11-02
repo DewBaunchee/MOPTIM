@@ -1,4 +1,4 @@
-package by.varyvoda.matvey.task1.utils;
+package by.varyvoda.matvey.utils;
 
 public class PrintUtils {
 

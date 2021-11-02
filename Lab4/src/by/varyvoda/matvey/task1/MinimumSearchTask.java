@@ -1,6 +1,6 @@
 package by.varyvoda.matvey.task1;
 
-import by.varyvoda.matvey.task1.utils.PrintUtils;
+import by.varyvoda.matvey.utils.PrintUtils;
 
 import java.util.Arrays;
 
