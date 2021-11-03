@@ -37,7 +37,7 @@ public class Function {
     }
 
     public double[] getGradient(double... qs) {
-        double[] gradient = new double[5];
+        double[] gradient = new double[qs.length];
         for (int i = 0; i < qs.length; i++) {
             gradient[i] = solveDerivativeComponent(qs[i], i);
         }

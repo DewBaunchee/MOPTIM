@@ -2,18 +2,24 @@ package by.varyvoda.matvey.task2;
 
 import by.varyvoda.matvey.utils.PrintUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class GradientDescent {
+public class GradientDescent extends Thread {
 
     private static class StepResult {
 
         public final double result;
 
+        public final double[] args;
+
         public final double[] newArgs;
 
-        public StepResult(double result, double[] newArgs) {
+        public StepResult(double result, double[] args, double[] newArgs) {
             this.result = result;
+            this.args = args;
             this.newArgs = newArgs;
         }
     }
@@ -31,30 +37,73 @@ public class GradientDescent {
     }
 
     public void solve() {
+        start();
+    }
+
+    public void run() {
+        List<String> minimums = new ArrayList<>();
         double[] qs = new double[componentCount];
         Arrays.fill(qs, 1);
 
+        boolean isDescending = true;
         int iteration = 1;
-        StepResult result = nextStep(qs, iteration++);
+
+        StepResult result = nextStep(qs, makeSender(minimums, iteration++));
         double prevValue = result.result;
-        result = nextStep(result.newArgs, iteration++);
+        result = nextStep(result.newArgs, makeSender(minimums, iteration++));
         double currentValue = result.result;
 
-        while (Math.abs(prevValue - currentValue) > e) {
+        while (!isInterrupted()) {
+            if (Math.abs(prevValue - currentValue) < e) {
+                minimums.add(currentValue + " at " + PrintUtils.formatArray(result.args));
+                break;
+            } else if (isDescending && prevValue < currentValue) {
+                minimums.add(currentValue + " at " + PrintUtils.formatArray(result.args));
+            }
+
+            isDescending = currentValue < prevValue;
+
             prevValue = currentValue;
-            result = nextStep(result.newArgs, iteration++);
+            result = nextStep(result.newArgs, makeSender(minimums, iteration++));
             currentValue = result.result;
         }
+
+        if (minimums.isEmpty())
+            System.out.println("No minimums found.");
+        else
+            System.out.println(minimums.stream().reduce("", (accumulator, value) -> accumulator + "\n" + value));
+
     }
 
-    private StepResult nextStep(double[] qs, int iteration) {
+    private String makeSender(List<String> minimums, int iteration) {
+        return String.format("[%d min%s] - Iteration: %d: ", minimums.size(), minimums.size() == 1 ? "" : "s", iteration);
+    }
+
+    private StepResult nextStep(double[] qs, String sender) {
         double result = function.solve(qs);
-        System.out.printf("Iteration #%d: result - %s, qs - %s\n", iteration, result, PrintUtils.formatArray(qs));
+        System.out.printf("%s: result - %s, qs - %s\n", sender, result, PrintUtils.formatArray(qs));
         double[] gradient = function.getGradient(qs);
-        System.out.printf("Iteration #%d: gradient - %s\n", iteration, PrintUtils.formatArray(gradient));
+        System.out.printf("%s: gradient - %s\n", sender, PrintUtils.formatArray(gradient));
+        double[] oldQs = qs;
         qs = add(qs, multiply(-stepLength, gradient));
-        System.out.printf("Iteration #%d: new arguments - %s\n\n", iteration, PrintUtils.formatArray(qs));
-        return new StepResult(result, qs);
+        System.out.printf("%s: new arguments - %s\n\n", sender, PrintUtils.formatArray(qs));
+        return new StepResult(result, oldQs, qs);
+    }
+
+    public void waitForSolving() {
+        try {
+            System.in.read();
+        } catch (IOException ignored) {
+
+        }
+        if (isAlive()) {
+            interrupt();
+            try {
+                join();
+            } catch (InterruptedException ignored) {
+
+            }
+        }
     }
 
     private static double[] multiply(double multiplier, double[] vector) {
@@ -66,7 +115,7 @@ public class GradientDescent {
     }
 
     private static double[] add(double[] left, double[] right) {
-        if(left.length != right.length)
+        if (left.length != right.length)
             throw new IllegalArgumentException("Length are different.");
         double[] result = new double[left.length];
         for (int i = 0; i < left.length; i++) {
