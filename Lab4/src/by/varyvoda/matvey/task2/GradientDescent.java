@@ -76,7 +76,7 @@ public class GradientDescent extends Thread {
     }
 
     private String makeSender(List<String> minimums, int iteration) {
-        return String.format("[%d min%s] - Iteration: %d: ", minimums.size(), minimums.size() == 1 ? "" : "s", iteration);
+        return String.format("[%d min%s] - Iteration: %d", minimums.size(), minimums.size() == 1 ? "" : "s", iteration);
     }
 
     private StepResult nextStep(double[] qs, String sender) {
@@ -92,7 +92,7 @@ public class GradientDescent extends Thread {
 
     public void waitForSolving() {
         try {
-            System.in.read();
+            if(System.in.read() < 0) System.out.println("Interrupting solving...");
         } catch (IOException ignored) {
 
         }

@@ -33,7 +33,7 @@ public class Function {
     }
 
     private double solveDerivativeComponent(double q, int index) {
-        return -2 * Ks[index] * vs[index] / (q * q) + 0.5 * s[index];
+        return - Ks[index] * vs[index] / (q * q) + 0.5 * s[index];
     }
 
     public double[] getGradient(double... qs) {

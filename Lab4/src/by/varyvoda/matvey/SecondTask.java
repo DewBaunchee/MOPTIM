@@ -12,7 +12,7 @@ public class SecondTask {
                 new double[] {10, 7, 15, 110, 6},
                 new double[] {8, 70, 6, 8, 20}
         );
-        GradientDescent gradientDescent = new GradientDescent(0.0001, 5, 0.0000001, function);
+        GradientDescent gradientDescent = new GradientDescent(0.001, 5, 0.0000000001, function);
         gradientDescent.solve();
         gradientDescent.waitForSolving();
 
